@@ -1,0 +1,192 @@
+#include<iostream>
+using namespace std;
+class SparseMatrix {
+    int matrix[100][100],n_rows,n_cols;
+    int sparse[100][3];
+    public :
+    void get_matrix();
+    void create_sparsematrix();
+    void display();
+    create_negativesparse();
+    void addition (SparseMatrix m,SparseMatrix m2);
+};
+    // :: this operator is named as scope resolution operator
+     void SparseMatrix :: get_matrix(){
+            cout<<"Enter the  no. of rows =";
+            cin>>n_rows;
+            cout<<endl<<"Enter the no. of columns=";
+            cin>>n_cols;
+
+            for(int i=0;i<n_rows;i++){
+                for(int j=0;j<n_cols;j++){
+                    cout<<"Enter element ["<<i<<"]"<<"["<<j<<"] :";
+                    cin>>matrix[i][j];
+                }
+            } 
+     }
+
+     void SparseMatrix ::create_sparsematrix(){
+        int k=1;
+        for(int i=0;i<n_rows;i++){
+            for(int j=0;j<n_cols;j++){
+                if(matrix[i][j]!=0){
+                    sparse[k][0]=i;
+                    sparse[k][1]=j;
+                    sparse[k][2]=matrix[i][j];
+                    k++;
+                }
+            }
+        }
+        sparse[0][0]=n_rows;
+        sparse[0][1]=n_cols;
+        sparse[0][2]=k-1;
+     }
+
+      void SparseMatrix ::create_negativesparse(){
+        int k=1;
+        for(int i=0;i<n_rows;i++){
+            for(int j=0;j<n_cols;j++){
+                if(matrix[i][j]!=0){
+                    sparse[k][0]=i;
+                    sparse[k][1]=j;
+                    sparse[k][2]=-matrix[i][j];
+                    k++;
+                }
+            }
+        }
+        sparse[0][0]=n_rows;
+        sparse[0][1]=n_cols;
+        sparse[0][2]=k-1;
+     }
+
+     void SparseMatrix::display(){
+        cout<<"\n\tROWS  COLUMNS  VALUES";
+        for(int i=0;i<=sparse[0][2];i++){
+            cout<<endl;
+            for(int j=0;j<3;j++){
+                cout<<" \t "<<sparse[i][j];
+            }
+        }
+
+     }
+     void SparseMatrix :: addition(SparseMatrix m, SparseMatrix m2){
+            int l1,l2,i=1,j=1,k=1;
+            int result[100][3];
+            
+            l1=m.sparse[0][2];
+            l2=m2.sparse[0][2];
+            result[0][0]=m.sparse[0][0];
+            result[0][1]=m.sparse[0][1];
+
+            while(i<=l1 && j<=l2){
+                if(m.sparse[i][0]==m2.sparse[j][0]){
+                    if(m.sparse[i][1]==m2.sparse[j][1]){
+                        result[k][0]=m.sparse[i][0];
+                        result[k][1]=m.sparse[i][1];
+                        result[k][2]=m.sparse[i][2] + m.sparse[j][2];
+                        i++;
+                        j++;
+                        k++;
+                    }
+                    else {
+                        if (m.sparse[i][1] < m2.sparse[j][1]){
+                            result[k][0]=m.sparse[i][0];
+                            result[k][1]=m.sparse[i][1];
+                            result[k][2]=m.sparse[i][2];
+                            i++;
+                            k++;
+                        }
+                        else {
+                            if(m.sparse[i][1] >m2.sparse[j][1] ){
+                                 result[k][0]=m2.sparse[j][0];
+                                 result[k][1]=m2.sparse[j][1];
+                                 result[k][2]=m2.sparse[j][2];
+                                 j++;
+                                 k++;
+                            } 
+                        }
+                    }
+                }
+                else {
+                    if(m.sparse[i][0] < m2.sparse[j][0]){
+                        result[k][0]=m.sparse[i][0];
+                        result[k][1]=m.sparse[i][1];
+                        result[k][2]=m.sparse[i][2];
+                            i++;
+                            k++;
+                    }
+                    else {
+                        if(m.sparse[i][0] > m2.sparse[j][0]){
+                            result[k][0]=m2.sparse[j][0];
+                            result[k][1]=m2.sparse[j][1];
+                            result[k][2]=m2.sparse[j][2];
+                            j++;
+                            k++;
+                        }
+                    }
+                }
+            }
+
+            while((j<=l2) && (i>l1)){
+                result[k][0]=m2.sparse[j][0];
+                result[k][1]=m2.sparse[j][1];
+                result[k][2]=m2.sparse[j][2];
+                j++;
+                k++;
+            }
+
+            while((i<l1) && (j>l2)){
+                        result[k][0]=m.sparse[i][0];
+                        result[k][1]=m.sparse[i][1];
+                        result[k][2]=m.sparse[i][2];
+                            i++;
+                            k++;
+            }
+            result[0][2]= k-1;
+            cout<<endl<<"substraction result is :";
+            cout<<"\n\tROWS COLUMNS VALUES";
+            
+            for(int i=0;i<=result[0][2];i++){
+            cout<<"\n";
+            for(int j=0;j<3;j++){
+                cout<<" \t "<<result[i][j];
+            }
+        }
+
+     } 
+
+
+int main(){
+    SparseMatrix m,m2;
+    int ch;
+    do{
+        cout<<endl<<"1 for get matrix"<<endl<<"2 for second matrix"<<endl<<"3 for first display"<<endl<<"4 for second display"<<endl<<"5 for addition"<<endl<<"6 for exit";
+        cout<<endl<<"Enter the choice =";
+        cin>>ch;
+        switch (ch)
+        {
+        case 1:
+            m.get_matrix();
+            break;
+        case 2 :
+            m2.get_matrix();
+            break;
+        case 3 :
+            m.display();
+        case 4:
+            m2.display();
+            break;
+         case 5:
+            m.addition(m,m2);
+            break;
+        case 6 :
+            m.create_sparsematrix();
+            break;
+        case 7:
+            m2.create_negativesparse();
+        default:
+            cout<<"wrong choice";
+        }
+    } while(ch!=6);
+        return 0;
+}
